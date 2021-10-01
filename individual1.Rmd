@@ -61,6 +61,7 @@ happyByMar <- dat %>% group_by(marital) %>% na.omit %>%
 happyByMar
 ggplot(happyByMar, aes(x = marital, y = Happy)) +geom_bar(stat = 'identity')
 ```
+
 Overall most of the people in this data set are happy. On average a person tends to be happier if they are married than if they are single. Never married and divorced and widowed tended to be the most average in terms of happiness, with about three times more people happy vs. unhappy. Separated individuals is where the unhappy people starts to rise, and 40% of the people who answered as separated said that they were unhappy. That is a considerable amount more than the other marital statuses.
 
 ## 4.
@@ -72,7 +73,8 @@ happyByPol
 ggplot(happyByPol, aes(x = pol_party, y = Happy)) +geom_bar(stat = 'identity') +
   coord_flip()
 ```
-According to this data set people tend to be happier when they 
+
+According to this data set people tend to be happier when they are not that strong either way or are independent. It seems that someone without too extreme of opinions tends to be happier. Of those that were more strongly towards one political party or the other, democrats tended to report being more unhappy than republicans.
 
 
 ## 5. 
@@ -85,3 +87,4 @@ happyByWork
 ggplot(happyByWork, aes(x = happy, y = Normal)) +geom_bar(stat = 'identity')
 ```
 
+Participants who reported working an average hours of 40 a week and those that reported working less than 40 hours a week reported an about equal percentage of happy and unhappy people. Whereas those who reported working more than 40 hours a week were just slightly more happy on average. Surprisingly, the data given here says that hours worked a week and happiness are not very correlated with one another.
