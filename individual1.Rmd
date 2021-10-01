@@ -11,3 +11,77 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 
+```{r}
+library(ggplot2)
+library(tidyverse)
+dat <- readxl::read_xls('GSS.xls') 
+dat <- dat %>% rename(year="Gss year for this respondent",
+         rid="Respondent id number",
+         hours_week="Number of hours usually work a week",
+         marital="Marital status",
+         school="Highest year of school completed",
+         rsex="Respondents sex",
+         pol_party="Political party affiliation",
+         happy="General happiness",
+         ballot="Ballot used for interview")
+```
+
+Data Cleanup
+```{r}
+cols.num <- c("hours_week","school")
+dat[cols.num] <- sapply(dat[cols.num],as.numeric)
+dat[dat=="No answer" | dat=="Don't know"] <- NA
+dat[dat=="Not applicable"] <- NA
+```
+
+## 1.
+```{r}
+medu <- dat %>% group_by(marital) %>% na.omit %>% summarise(education = mean(school, na.rm=TRUE)) %>% arrange(desc(education))
+medu
+```
+On average those who are single on purpose have the most years of education. Married individuals have the most average years of school, and those who are single through unexpected circumstances tend to have the least years of education.
+
+## 2.
+```{r}
+#by_mar <- dat %>% group_by(marital)
+#by_mar <- by_mar %>% filter(school>=mean(school))
+by_mar <- dat %>%
+  group_by(marital) %>%
+  filter(school > mean(school, na.rm = TRUE)) %>%
+  ungroup()
+str(by_mar)
+```
+
+
+## 3.
+```{r}
+happyByMar <- dat %>% group_by(marital) %>% na.omit %>%
+  summarise(Happy=sum(happy %in% c("Very happy","Pretty happy")), 
+  Not_Happy=sum(happy=="Not too happy"))
+happyByMar
+ggplot(happyByMar, aes(x = marital, y = Happy)) +geom_bar(stat = 'identity')
+```
+Overall most of the people in this data set are happy. On average a person tends to be happier if they are married than if they are single. Never married and divorced and widowed tended to be the most average in terms of happiness, with about three times more people happy vs. unhappy. Separated individuals is where the unhappy people starts to rise, and 40% of the people who answered as separated said that they were unhappy. That is a considerable amount more than the other marital statuses.
+
+## 4.
+```{r}
+happyByPol <- dat %>% group_by(pol_party) %>% na.omit %>%
+  summarise(Happy=sum(happy %in% c("Very happy","Pretty happy")), 
+  Not_Happy=sum(happy=="Not too happy"))
+happyByPol
+ggplot(happyByPol, aes(x = pol_party, y = Happy)) +geom_bar(stat = 'identity') +
+  coord_flip()
+```
+According to this data set people tend to be happier when they 
+
+
+## 5. 
+```{r}
+happyByWork <- dat %>% group_by(happy) %>% na.omit %>%
+  summarise(Short=sum(hours_week<40), 
+  Normal=sum(hours_week==40),
+  Long=sum(hours_week>40))
+happyByWork
+ggplot(happyByWork, aes(x = happy, y = Normal)) +geom_bar(stat = 'identity')
+```
+
